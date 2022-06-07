@@ -35,4 +35,4 @@ jobs:
         run: npm run build
       
       - name: Run deploy
-        run: npx np ${{ steps.get_version.outputs.version-without-v }} --any-branch
+        run: npm version ${{ steps.get_version.outputs.version-without-v }} && npm publish
