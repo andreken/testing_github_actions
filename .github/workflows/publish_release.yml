@@ -3,8 +3,6 @@ name: Github Actions - Release
 # Run on every commit tag which begins with "v" (e.g. v1.0.1)
 on:
   push:
-    branches:
-      - "main"
     tag:
       - "v*"
 
