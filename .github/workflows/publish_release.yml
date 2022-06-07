@@ -15,10 +15,9 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # if: ${{ github.ref_type == 'tag' && github.ref=='refs/heads/main' }}
     steps:
       - name: Message
-        run: echo "Hello user, I am triggered because of tag ${{github.ref_type}} push in branch ${{ github.base_ref }} "
+        run: echo "Hello user, I am triggered because of tag ${{github.ref_name}} push"
         shell: bash
 
       - name: Checkout Repository
