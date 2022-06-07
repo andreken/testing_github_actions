@@ -22,8 +22,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "",
-    "eject": "react-scripts eject",
-    "deploy": "npm run build && np ${npm_config_tag}"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
