@@ -15,7 +15,7 @@
     "url": "https://github.com/andreken/testing_github_actions.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/andreken"
+    "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
     "start": "react-scripts start",
