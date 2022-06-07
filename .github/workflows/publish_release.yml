@@ -1,0 +1,35 @@
+name: Github Actions - Release
+
+# Run on every commit tag which begins with "v" (e.g. v1.0.1)
+on:
+  push:
+    tag:
+      - "v*"
+
+jobs:
+  release:
+    name: Run Deploy
+
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node JS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Get version tag
+        id: get_version
+        uses: battila7/get-version-action@v2    
+
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run deploy
+        run: npm run deploy --tag=${{ steps.get_version.outputs.version-without-v }}
