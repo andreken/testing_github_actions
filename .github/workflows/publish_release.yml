@@ -25,18 +25,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set Branch
+      - name: Set branch name in env file
         run: |
           branch_raw=$(git branch -r --contains ${{ github.ref }})
           branch=${branch_raw##*/}
-          branch_test=test
           echo "BRANCH=$(echo ${branch})" >> $GITHUB_ENV
-          echo "BRANCH_RAW=$(echo ${branch_raw})" >> $GITHUB_ENV
-          echo "BRANCH_TEST=$(echo ${branch_test})" >> $GITHUB_ENV
 
       - name: Get Branch
         run: echo $BRANCH
 
+      if: $BRANCH == 'main'
       - name: Setup Node JS
         uses: actions/setup-node@v2
         with:
