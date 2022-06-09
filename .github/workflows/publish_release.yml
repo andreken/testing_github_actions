@@ -1,3 +1,5 @@
+# Github actions used to automatically release a new version of the library
+# Run only when a new tag is pushed, on main branch
 name: Github Actions - Release
 
 # Run on every commit tag (e.g. 1.0.1)
@@ -6,18 +8,45 @@ on:
     tags:
       - '*'
 
-jobs:
-  release:
-    name: Publish new library version
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+jobs:
+  branch_set:
+    name: Set current branch name
     runs-on: ubuntu-latest
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # https://docs.github.com/en/actions/learn-github-actions/contexts#example-usage-of-the-needs-context
+    # specify a set of outputs that you want to pass to subsequent jobs
+    outputs:
+      current_branch: ${{ steps.set_branch.outputs.value }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          # Number of commits to fetch. 0 indicates all history for all branches and tags. Default 1
+          # Needed to get the name of the branch on which the tag has been pushed
+          fetch-depth: 0
+
+      - name: Set branch name
+        id: set_branch
+        run: |
+          branch_raw=$(git branch -r --contains ${{ github.ref }})
+          branch=${branch_raw##*/}
+          echo "::set-output name=value::$(echo ${branch})"
+
+  release:
+    name: Publish new library version
+    needs: branch_set
+    # access to job outputs from your needs context
+    # i want to pubish the new tag only when pushing in main branch
+    if: needs.branch_set.outputs.current_branch == 'main'
+    runs-on: ubuntu-latest
 
     steps:
       - name: Message
-        run: echo "Hello user, I am triggered because of tag ${{github.ref_name}} push"
+        run: echo "I am triggered because of tag ${{github.ref_name}} push on branch ${{ needs.branch_set.outputs.current_branch }}"
         shell: bash
 
       - name: Checkout Repository
