@@ -16,6 +16,12 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - name: Get Branch
+        run: |
+          raw=$(git branch -r --contains ${{ github.ref }})
+          branch=${raw/origin\/}
+          echo ::set-env name=BRANCH::$branch
+      - run: echo ${{ env.BRANCH }}
       - name: Message
         run: echo "Hello user, I am triggered because of tag ${{github.ref_name}} push on branch $GITHUB_REF ${{github.ref}}"
         shell: bash
