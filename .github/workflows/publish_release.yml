@@ -33,15 +33,15 @@ jobs:
         id: set_branch
         run: |
           branch_raw=$(git branch -r --contains ${{ github.ref }})
-          branch=${branch_raw##*/}
-          echo "::set-output name=value::$(echo ${branch})"
+          branch_name=${branch_raw##*/}
+          echo "::set-output name=value::$(echo ${branch_name})"
 
   release:
     name: Publish new library version
     needs: branch_set
     # access to job outputs from your needs context
     # i want to pubish the new tag only when pushing in main branch
-    if: needs.branch_set.outputs.current_branch == 'main'
+    if: needs.branch_set.outputs.current_branch == 'main' || needs.branch_set.outputs.current_branch == 'master'
     runs-on: ubuntu-latest
 
     steps:
