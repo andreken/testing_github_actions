@@ -14,6 +14,8 @@ jobs:
     name: Set current branch name
     runs-on: ubuntu-latest
 
+    outputs:
+      current_branch: ${{ steps.set_branch.outputs.value }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -21,10 +23,12 @@ jobs:
           fetch-depth: 0
 
       - name: Set branch name in env file
+        id: set_branch
         run: |
           branch_raw=$(git branch -r --contains ${{ github.ref }})
           branch=${branch_raw##*/}
           echo "CURRENT_BRANCH=$(echo ${branch})" >> $GITHUB_ENV
+          echo "::set-output name=value::$(echo ${branch})"
 
       - name: Get Branch
         run: echo $CURRENT_BRANCH
@@ -32,7 +36,7 @@ jobs:
   release:
     name: Publish new library version
     needs: branch_set
-    if: ${{ env.CURRENT_BRANCH == 'main' }}
+    if: needs.branch_set.outputs.current_branch == 'main'
     runs-on: ubuntu-latest
 
     steps:
