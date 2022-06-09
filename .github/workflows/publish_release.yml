@@ -7,34 +7,41 @@ on:
       - '*'
 
 jobs:
-  release:
-    name: Publish new library version
-
+  branch-set:
+    name: Set current branch name
     runs-on: ubuntu-latest
-
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set branch name in env file
+      run: |
+        branch_raw=$(git branch -r --contains ${{ github.ref }})
+        branch=${branch_raw##*/}
+        echo "BRANCH=$(echo ${branch})" >> $GITHUB_ENV
+
+    - name: Get Branch
+      run: echo $BRANCH
+
+  release:
+    name: Publish new library version
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    if: $BRANCH == 'main'
     steps:
       - name: Message
-        run: echo "Hello user, I am triggered because of tag ${{github.ref_name}} push on branch $GITHUB_REF ${{github.ref}}"
+        run: echo "I am triggered because of tag ${{github.ref_name}} push on branch $BRANCH"
         shell: bash
 
       - name: Checkout Repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
-      - name: Set branch name in env file
-        run: |
-          branch_raw=$(git branch -r --contains ${{ github.ref }})
-          branch=${branch_raw##*/}
-          echo "BRANCH=$(echo ${branch})" >> $GITHUB_ENV
-
-      - name: Get Branch
-        run: echo $BRANCH
-
-      if: $BRANCH == 'main'
       - name: Setup Node JS
         uses: actions/setup-node@v2
         with:
