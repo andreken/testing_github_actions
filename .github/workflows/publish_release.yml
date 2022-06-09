@@ -23,13 +23,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Get Branch
+      - name: Set Branch
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
           echo 'BRANCH='$raw >> $GITHUB_ENV
 
-      - run: echo ${{ env.BRANCH }}
+      - name: Get Branch
+        run: echo $BRANCH
 
       - name: Setup Node JS
         uses: actions/setup-node@v2
