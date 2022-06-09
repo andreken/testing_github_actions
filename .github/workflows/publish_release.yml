@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Message
-        run: echo "Hello user, I am triggered because of tag ${{github.ref_name}} push on branch ${{github.repository}}"
+        run: echo "Hello user, I am triggered because of tag ${{github.ref_name}} push on branch $GITHUB_REF ${{github.ref}}"
         shell: bash
 
       - name: Checkout Repository
