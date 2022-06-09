@@ -6,12 +6,13 @@ on:
     tags:
       - '*'
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   branch_set:
     name: Set current branch name
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout Repository
@@ -23,22 +24,20 @@ jobs:
         run: |
           branch_raw=$(git branch -r --contains ${{ github.ref }})
           branch=${branch_raw##*/}
-          echo "BRANCH=$(echo ${branch})" >> $GITHUB_ENV
+          echo "CURRENT_BRANCH=$(echo ${branch})" >> $GITHUB_ENV
 
       - name: Get Branch
-        run: echo $BRANCH
+        run: echo $CURRENT_BRANCH
 
   release:
     name: Publish new library version
     needs: branch_set
-    if: $BRANCH == 'main'
+    if: ${{ env.CURRENT_BRANCH == 'main' }}
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Message
-        run: echo "I am triggered because of tag ${{github.ref_name}} push on branch $BRANCH"
+        run: echo "I am triggered because of tag ${{github.ref_name}} push on branch ${{ env.CURRENT_BRANCH }}"
         shell: bash
 
       - name: Checkout Repository
