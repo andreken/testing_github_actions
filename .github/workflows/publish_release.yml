@@ -36,12 +36,11 @@ jobs:
   release:
     name: Publish new library version
     needs: branch_set
-    if: needs.branch_set.outputs.current_branch == 'main'
     runs-on: ubuntu-latest
 
     steps:
       - name: Message
-        run: echo "I am triggered because of tag ${{github.ref_name}} push on branch ${{ env.CURRENT_BRANCH }}"
+        run: echo "I am triggered because of tag ${{github.ref_name}} push on branch ${{ needs.branch_set.outputs.current_branch }}"
         shell: bash
 
       - name: Checkout Repository
