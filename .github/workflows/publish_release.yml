@@ -24,11 +24,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get Branch
+        env:
+          BRANCH_RAW: $(git branch -r --contains ${{ github.ref }})
         run: |
-          raw=$(git branch -r --contains ${{ github.ref }})
-          branch=${raw/origin\/}
-          echo $raw
-          echo "BRANCH=$raw" >> $GITHUB_ENV
+          echo "BRANCH=${BRANCH_RAW}" >> $GITHUB_ENV
+          echo "set BRANCH to ${BRANCH_RAW}"
 
       - run: echo ${{ env.BRANCH }}
 
