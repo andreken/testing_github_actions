@@ -13,19 +13,20 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    - name: Set branch name in env file
-      run: |
-        branch_raw=$(git branch -r --contains ${{ github.ref }})
-        branch=${branch_raw##*/}
-        echo "BRANCH=$(echo ${branch})" >> $GITHUB_ENV
+      - name: Set branch name in env file
+        run: |
+          branch_raw=$(git branch -r --contains ${{ github.ref }})
+          branch=${branch_raw##*/}
+          echo "BRANCH=$(echo ${branch})" >> $GITHUB_ENV
 
-    - name: Get Branch
-      run: echo $BRANCH
+      - name: Get Branch
+        run: echo $BRANCH
 
   release:
     name: Publish new library version
