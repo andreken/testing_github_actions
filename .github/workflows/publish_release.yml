@@ -28,7 +28,7 @@ jobs:
       - name: Set Branch
         run: |
           branch_raw=$(git branch -r --contains ${{ github.ref }})
-          branch=${raw##*/}
+          branch=${branch_raw##*/}
           branch_test=test
           echo "BRANCH=$(echo ${branch})" >> $GITHUB_ENV
           echo "BRANCH_RAW=$(echo ${branch_raw})" >> $GITHUB_ENV
