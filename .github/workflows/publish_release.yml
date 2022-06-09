@@ -7,7 +7,7 @@ on:
       - '*'
 
 jobs:
-  branch-set:
+  branch_set:
     name: Set current branch name
     runs-on: ubuntu-latest
     env:
@@ -29,11 +29,12 @@ jobs:
 
   release:
     name: Publish new library version
+    needs: branch_set
+    if: $BRANCH == 'main'
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    if: $BRANCH == 'main'
     steps:
       - name: Message
         run: echo "I am triggered because of tag ${{github.ref_name}} push on branch $BRANCH"
